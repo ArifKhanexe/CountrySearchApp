@@ -170,7 +170,8 @@ class MainScreenCompose : ComponentActivity() {
 
         if (showBottomSheet.value) {
             ShowStatisticsBottomSheet(
-                visibleItems = visibleItems,
+//                visibleItems = visibleItems,
+                visibleItems = filteredList, //Instead of visible list, taking filtered list.
                 showBottomSheet = showBottomSheet
             )
         }
@@ -193,21 +194,46 @@ class MainScreenCompose : ComponentActivity() {
                 onDismissRequest = { showBottomSheet.value = false },
                 sheetState = bottomSheetState
             ) {
+//                Column(modifier = Modifier.padding(16.dp)) {
+//                    Text(text = "Visible Item Count: ${visibleItems.size}")
+//                    visibleItems.forEach { country ->
+//                        val countryName = country.name?.common ?: ""
+//                        val capitalName = country.capital?.firstOrNull() ?: ""
+//                        val combinedName = "$countryName $capitalName"
+//                        val charFrequency = calculateCharacterFrequency(combinedName)
+//                        val totalCharCount = combinedName.replace(" ", "").length
+//
+//                        Text(
+//                            text = "Country: $countryName, Capital: $capitalName\n" +
+//                                    "Character Frequencies: $charFrequency\n" +
+//                                    "Total Character Count: $totalCharCount\n\n"
+//                        )
+//                    }
+//                }
+
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text(text = "Visible Item Count: ${visibleItems.size}")
+                    Text(text = "Item Count: ${visibleItems.size}")
+
+                    // Combine the names of all visible countries and their capitals
+                    val combinedString = StringBuilder()
+
                     visibleItems.forEach { country ->
                         val countryName = country.name?.common ?: ""
                         val capitalName = country.capital?.firstOrNull() ?: ""
-                        val combinedName = "$countryName $capitalName"
-                        val charFrequency = calculateCharacterFrequency(combinedName)
-                        val totalCharCount = combinedName.replace(" ", "").length
 
-                        Text(
-                            text = "Country: $countryName, Capital: $capitalName\n" +
-                                    "Character Frequencies: $charFrequency\n" +
-                                    "Total Character Count: $totalCharCount\n\n"
-                        )
+                        // Append the combined name to the full string
+                        combinedString.append("$countryName $capitalName ")
                     }
+
+                    // Calculate the character frequency for the entire combined string
+                    val charFrequency = calculateCharacterFrequency(combinedString.toString())
+                    val totalCharCount = combinedString.toString()
+                        .replace(" ", "").length // Total characters excluding spaces
+
+                    Text(
+                        text = "Character Frequencies: $charFrequency\n" +
+                                "Total Character Count: $totalCharCount\n\n"
+                    )
                 }
             }
         }
@@ -420,8 +446,6 @@ class MainScreenCompose : ComponentActivity() {
             .take(3)
             .joinToString(separator = ", ") { "${it.key} = ${it.value}" }
     }
-
-
 
 
 }
