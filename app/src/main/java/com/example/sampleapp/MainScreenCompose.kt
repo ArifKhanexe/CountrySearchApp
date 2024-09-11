@@ -274,7 +274,7 @@ class MainScreenCompose : ComponentActivity() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(20.dp)
         ) {
             LazyRow(
                 state = listState,
@@ -285,7 +285,7 @@ class MainScreenCompose : ComponentActivity() {
                 items(images) { image ->
                     Box(
                         modifier = Modifier
-                            .width(300.dp)
+                            .width(320.dp)
                             .height(200.dp)
                             .padding(horizontal = 4.dp)
                             .clip(RoundedCornerShape(8.dp))
