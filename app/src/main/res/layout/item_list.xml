@@ -11,7 +11,7 @@
     <ImageView
         android:id="@+id/countryFlag"
         android:layout_marginStart="10dp"
-        android:layout_width="50dp"
+        android:layout_width="70dp"
         android:layout_height="40dp"
         android:scaleType="centerCrop" />
 
