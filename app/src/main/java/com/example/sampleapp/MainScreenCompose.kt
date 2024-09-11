@@ -16,6 +16,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -326,6 +328,16 @@ class MainScreenCompose : ComponentActivity() {
                 Text(text = hint, style = MaterialTheme.typography.bodyMedium)
             },
             leadingIcon = leadingIcon,
+            trailingIcon = {
+                if (query.value.text.isNotEmpty()) {
+                    IconButton(onClick = { query.value = TextFieldValue("") }) {
+                        Icon(
+                            imageVector = Icons.Default.Close, // Cross icon
+                            contentDescription = "Clear text"
+                        )
+                    }
+                }
+            },
             singleLine = true,
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.White,
