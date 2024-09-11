@@ -124,11 +124,11 @@ class MainActivity : AppCompatActivity() {
     private fun setupFAB() {
         val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener {
-            showStatisticsBottomSheet()
+            showStatisticsBottomSheetForList()
         }
     }
 
-    private fun showStatisticsBottomSheet() {
+    private fun showStatisticsBottomSheetforEach() {
         if (!::countryAdapter.isInitialized || countryAdapter.filteredCountries.isEmpty()) {
             // Show a message or return if adapter is not ready
             Log.d("MainActivity", "Adapter not initialized or no filtered countries available.")
@@ -166,7 +166,7 @@ class MainActivity : AppCompatActivity() {
             val capitalName = country.capital?.get(0) ?: ""
 
             val combinedName = "$countryName $capitalName"
-            val charFrequency = calculateCharacterFrequency(combinedName)
+            val charFrequency = calculateCharacterFrequencyEach(combinedName)
             val totalCharCount = combinedName.replace(" ", "").length // Calculate total characters excluding spaces
 
             charFrequenciesPerItem.append("Country: $countryName, Capital: $capitalName\n")
@@ -180,7 +180,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun calculateCharacterFrequency(item: String): String {
+    private fun calculateCharacterFrequencyEach(item: String): String {
         val charCount = mutableMapOf<Char, Int>()
 
         item.forEach { char ->
@@ -196,6 +196,67 @@ class MainActivity : AppCompatActivity() {
             .joinToString(separator = ", ") { "${it.key} = ${it.value}" }
     }
 
+    private fun showStatisticsBottomSheetForList() {
+        if (!::countryAdapter.isInitialized || countryAdapter.filteredCountries.isEmpty()) {
+            // Show a message or return if adapter is not ready
+            Log.d("MainActivity", "Adapter not initialized or no filtered countries available.")
+            return
+        }
+
+        // Get all filtered countries (not just the visible ones)
+        val allItems = countryAdapter.filteredCountries
+        Log.d("MainActivity", "Total Items Count: ${allItems.size}")
+
+        val bottomSheetDialog = BottomSheetDialog(this)
+        val view = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_statistics, null)
+        bottomSheetDialog.setContentView(view)
+
+        val itemCountTextView: TextView = view.findViewById(R.id.itemCountTextView)
+        val topCharactersTextView: TextView = view.findViewById(R.id.topCharactersTextView)
+
+        itemCountTextView.text = "Total Item Count: ${allItems.size}"
+
+        // Combine the names of all countries and their capitals from the entire list
+        val combinedString = StringBuilder()
+
+        allItems.forEach { country ->
+            val countryName = country.name?.common ?: ""
+            val capitalName = country.capital?.get(0) ?: ""
+
+            // Append the combined name to the full string
+            combinedString.append("$countryName $capitalName ")
+        }
+
+        // Calculate the character frequency for the entire combined string
+        val charFrequency = calculateCharacterFrequencyForList(combinedString.toString())
+        val totalCharCount = combinedString.toString().replace(" ", "").length // Total characters excluding spaces
+
+        // Display character frequency and total count
+        val charFrequenciesPerItem = StringBuilder()
+        charFrequenciesPerItem.append("Character Frequencies: $charFrequency\n")
+        charFrequenciesPerItem.append("Total Character Count: $totalCharCount\n")
+
+        topCharactersTextView.text = charFrequenciesPerItem.toString()
+
+        bottomSheetDialog.show()
+
+    }
+
+    private fun calculateCharacterFrequencyForList(item: String): String {
+        val charCount = mutableMapOf<Char, Int>()
+
+        item.forEach { char ->
+            if (char.isLetter()) {
+                charCount[char.lowercaseChar()] = charCount.getOrDefault(char.lowercaseChar(), 0) + 1
+            }
+        }
+
+        // Sort by frequency and get the top 3 characters
+        return charCount.entries
+            .sortedByDescending { it.value }
+            .take(3)
+            .joinToString(separator = ", ") { "${it.key} = ${it.value}" }
+    }
     private fun createDots(count: Int) {
         dots = Array(count) { ImageView(this) }
         dotsLayout.removeAllViews()
