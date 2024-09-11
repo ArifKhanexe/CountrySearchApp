@@ -79,6 +79,12 @@ class MainActivity : AppCompatActivity() {
 
         // Set up SearchView to filter ListView
         searchView.setQueryHint("India");
+
+        // Handle SearchView click directly to trigger search
+        searchView.setOnClickListener {
+            searchView.setIconified(false)  // Expand the search view immediately when clicked
+        }
+
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
